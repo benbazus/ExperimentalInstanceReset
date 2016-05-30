@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <Extern href="stdidcmd.h"/>
+
+  <Extern href="vsshlids.h"/>
+
+  <Commands package="guidResetVSExpInstanceCommandPackage">
+
+    <Groups>
+      <Group guid="guidResetVSExpInstanceCommandPackageCmdSet" id="MyMenuGroup" priority="0x0600">
+        <!--<Parent guid="guidSHLMainMenu" id="IDG_VS_TOOLS_EXT_TOOLS"/>-->
+           <!--<Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>-->
+           <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>
+
+      </Group>
+    </Groups>
+      <Buttons>
+      <Button guid="guidResetVSExpInstanceCommandPackageCmdSet" id="ResetVSExpInstanceCommandId" priority="0x0100" type="Button">
+        <Parent guid="guidResetVSExpInstanceCommandPackageCmdSet" id="MyMenuGroup" />
+        <Icon guid="guidCmdIcon" id="bmpCmdIcon" />
+        <Strings>
+          <ButtonText>Reset Experimental Instance</ButtonText>
+        </Strings>
+      </Button>
+    </Buttons>
+      <Bitmaps>
+             <Bitmap guid="guidCmdIcon" href="Resources\Icon.png" usedList="bmpCmdIcon"/>
+      </Bitmaps>
+  </Commands>
+
+  <Symbols>
+    <GuidSymbol name="guidResetVSExpInstanceCommandPackage" value="{0440cf56-007c-45c1-aeba-ae8ca81fd5fa}" />
+    <GuidSymbol name="guidResetVSExpInstanceCommandPackageCmdSet" value="{2ef51c7c-6cb4-45ff-823d-6ec9d8bea21d}">
+      <IDSymbol name="MyMenuGroup" value="0x1020" />
+      <IDSymbol name="ResetVSExpInstanceCommandId" value="0x0100" />
+    </GuidSymbol>
+<GuidSymbol name="guidCmdIcon" value="{0a66e187-72de-4ae7-a0f8-3131e1cdba68}">
+        <IDSymbol name="bmpCmdIcon" value="1" />
+    </GuidSymbol>
+  </Symbols>
+</CommandTable>
