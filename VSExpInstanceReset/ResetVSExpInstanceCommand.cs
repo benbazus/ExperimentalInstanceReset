@@ -15,6 +15,7 @@ using System.Text.RegularExpressions;
 using System.IO;
 using Microsoft.VisualStudio;
 using EnvDTE80;
+using VSExpInstanceReset.ViewModel;
 
 namespace VSExpInstanceReset
 {
@@ -68,8 +69,7 @@ namespace VSExpInstanceReset
         {
             bool isReset= System.Windows.Forms.MessageBox.Show("This will Reset the Visual Studio Experiment Instance",
            "Reset Experimental Instance", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes;
-
-
+            
 
             string filePath = @"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VSSDK\VisualStudioIntegration\Tools\Bin\CreateExpInstance.exe";
             string arguments = @" /Reset /VSInstance=14.0/ RootSuffix=Exp";
@@ -79,12 +79,16 @@ namespace VSExpInstanceReset
             if (!isReset)
                 return;
 
+            ResetProgressViewModel vm = new ResetProgressViewModel();
+            vm.DTE = DTE;
+            vm.FilePath = filePath;
+            vm.Argument = arguments;
+            vm.StartResettingExpInstance();
 
-            StartExecuting( filePath, arguments);
+           // StartExecuting( filePath, arguments);
 
         }
 
-    
         public void StartExecuting(  string path, string argument)
         {
             if (_isProcessing)
@@ -99,7 +103,7 @@ namespace VSExpInstanceReset
                     Logger.Log(Resources.Text.CreateExpResetMessage);
                     DTE.StatusBar.Text = Resources.Text.CreateExpResetMessage;
                     DTE.StatusBar.Animate(true, _animation);
-                    DTE.StatusBar.Progress(true, "Please waiting. resetting exp instance", 10 , 100); ;
+                    //DTE.StatusBar.Progress(true, "Please waiting. resetting exp instance", 10 , 100); ;
 
                     Execute(path, argument);
 
@@ -113,7 +117,7 @@ namespace VSExpInstanceReset
                 {
                     DTE.StatusBar.Animate(false, _animation);
                     _isProcessing = false;
-                    DTE.StatusBar.Progress(false);
+                   // DTE.StatusBar.Progress(false);
                     DTE.StatusBar.Text = Resources.Text.CreateExpCompleted;
                 }
 
@@ -172,10 +176,9 @@ namespace VSExpInstanceReset
         {
             if (e == null || string.IsNullOrEmpty(e.Data))
                 return;
-
+           
             Logger.Log(e.Data);
-            Console.Write(e.Data);
-            DTE.StatusBar.Progress(true, "Please waiting, resetting exp instance", 50, 100); ;
+           // DTE.StatusBar.Progress(true, "Please waiting, resetting exp instance", 50, 100); ;
         }
 
         private void ErrorDataReceived(object sender, System.Diagnostics.DataReceivedEventArgs e)
@@ -184,7 +187,6 @@ namespace VSExpInstanceReset
                 return;
 
             Logger.Log(e.Data);
-            Console.Write(e.Data);
         }
 
     }
