@@ -79,11 +79,20 @@ namespace VSExpInstanceReset.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Resetting experimental instance.
+        ///   Looks up a localized string similar to Resetting Experimental Instance....
         /// </summary>
-        internal static string CreateExpResetMessage {
+        internal static string ExpInstanceMessage {
             get {
-                return ResourceManager.GetString("CreateExpResetMessage", resourceCulture);
+                return ResourceManager.GetString("ExpInstanceMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset Experimental Instance.
+        /// </summary>
+        internal static string ExpInstanceTitle {
+            get {
+                return ResourceManager.GetString("ExpInstanceTitle", resourceCulture);
             }
         }
     }

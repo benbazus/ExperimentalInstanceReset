@@ -4,6 +4,7 @@
         <Identity Id="a452f910-6b6e-4ebd-952f-d8f1cd8c09b4" Version="1.0" Language="en-US" Publisher="Benjamin Uboegbu" />
         <DisplayName>Reset Experimental Instance</DisplayName>
         <Description xml:space="preserve">Reset Visual Studio Experimental Instance.</Description>
+        <MoreInfo>https://github.com/benbazus/ExperimentalInstanceReset</MoreInfo>
         <License>Resources\LICENSE</License>
         <Icon>Resources\Icon.png</Icon>
         <PreviewImage>Resources\Preview.png</PreviewImage>
@@ -18,6 +19,6 @@
     </Dependencies>
     <Assets>
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
-      <Asset Type="Microsoft.VisualStudio.ToolboxControl" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
-  </Assets>
+        <Asset Type="Microsoft.VisualStudio.ToolboxControl" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+    </Assets>
 </PackageManifest>

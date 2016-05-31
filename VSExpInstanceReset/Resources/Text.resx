@@ -123,7 +123,10 @@
   <data name="CreateExpError" xml:space="preserve">
     <value>Error occured during reseting experimental instance.</value>
   </data>
-  <data name="CreateExpResetMessage" xml:space="preserve">
-    <value>Resetting experimental instance</value>
+  <data name="ExpInstanceMessage" xml:space="preserve">
+    <value>Resetting Experimental Instance...</value>
+  </data>
+  <data name="ExpInstanceTitle" xml:space="preserve">
+    <value>Reset Experimental Instance</value>
   </data>
 </root>

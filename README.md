@@ -20,12 +20,20 @@ See the [changelog](CHANGELOG.md) for changes and roadmap.
 ### Reset Exp Instance
 In Visual Studio's top menu under Tools, a new command is now visible:
 
+
 ![Context Menu](art/context-menu.png)
+
 
 Clicking the **Reset Experimental Instance** button will prompt you to confirm
 the resetting process.
 
 ![Prompt](art/Prompt.png)
+
+
+The progress of the resetting process. When it finishes, the progress form will close.
+
+![Progress](art/progress.png)
+
 
 ## Contribute
 Check out the [contribution guidelines](CONTRIBUTING.md)

@@ -52,6 +52,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="GuidList.cs" />
+    <Compile Include="RelayCommand.cs" />
+    <Compile Include="source.extension.cs">
+      <DependentUpon>source.extension.vsixmanifest</DependentUpon>
+    </Compile>
     <Compile Include="View\ResetProgress.xaml.cs">
       <DependentUpon>ResetProgress.xaml</DependentUpon>
     </Compile>
@@ -70,6 +74,9 @@
     <Content Include="..\LICENSE">
       <Link>Resources\LICENSE</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="source.extension.ico">
+      <DependentUpon>source.extension.vsixmanifest</DependentUpon>
     </Content>
     <None Include="Key.snk" />
     <None Include="packages.config" />

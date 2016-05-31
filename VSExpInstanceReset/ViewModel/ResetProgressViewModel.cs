@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Threading;
 using VSExpInstanceReset.View;
 
@@ -14,18 +15,20 @@ namespace VSExpInstanceReset.ViewModel
 {
     public class ResetProgressViewModel : INotifyPropertyChanged
     {
-        private static bool _isProcessing = false;
+        private  bool _isProcessing = false;
+        private  bool _isError = false;
         private ResetProgressView dialog;
 
         public ResetProgressViewModel()
         {
-
+            IsVisible = Visibility.Collapsed;
+            ProgressbarVisible = Visibility.Visible;
         }
 
 
         #region Public properties
 
-        private string _title= "Resetting Experimental Instance";
+        private string _title;
         public string Title
         {
             get
@@ -43,8 +46,42 @@ namespace VSExpInstanceReset.ViewModel
             }
         }
 
+        private Visibility _progressbarVisible;
+        public Visibility ProgressbarVisible
+        {
+            get
+            {
+                return _progressbarVisible;
+            }
 
+            set
+            {
+                if (value != _progressbarVisible)
+                {
+                    _progressbarVisible = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        
 
+        private Visibility _isVisible;
+        public Visibility IsVisible
+        {
+            get
+            {
+                return _isVisible;
+            }
+
+            set
+            {
+                if (value != _isVisible)
+                {
+                    _isVisible = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         private string _message;
         public string Message
@@ -64,12 +101,27 @@ namespace VSExpInstanceReset.ViewModel
             }
         }
 
+        private ICommand _cancelCommand;
+        public ICommand CancelCommand
+        {
+            get { return _cancelCommand ?? (_cancelCommand = new RelayCommand(Cancel)); }
+        }
+
         public EnvDTE80.DTE2 DTE { get; internal set; }
         public string FilePath { get; internal set; }
         public string Argument { get; internal set; }
         public string Version { get; internal set; }
 
         #endregion
+
+
+
+
+        private void Cancel()
+        {
+            dialog.Close();
+            dialog = null;
+        }
 
         internal async void StartResettingExpInstance()
         {
@@ -94,39 +146,27 @@ namespace VSExpInstanceReset.ViewModel
             dialog.DataContext = this;
             dialog.Show();
 
-            try
+
+            await Task.Run(() =>
             {
+                StartProcess();
+            });
 
-                await System.Threading.Tasks.Task.Run(() =>
-                {
-                    StartProcess();
-                });
-
+            if (!_isError)
+            {
                 if (dialog != null && dialog.IsVisible)
                 {
                     dialog.Close();
                     dialog = null;
                 }
-
             }
-            catch (Exception ex)
-            {
-                Logger.Log(ex.Message.ToString());
-                Message=ex.Message.ToString();
-            }
-            finally
-            {
-                _isProcessing = false;
-                Message = Resources.Text.CreateExpCompleted;
-            }
-
-
         }
 
         private void StartProcess()
         {
             _isProcessing = true;
-            Message = "Resetting Experimental Instance...";
+            Title = Resources.Text.ExpInstanceTitle;
+            Message = Resources.Text.ExpInstanceMessage;
 
             System.Diagnostics.ProcessStartInfo start = new System.Diagnostics.ProcessStartInfo(FilePath)
             {
@@ -140,36 +180,34 @@ namespace VSExpInstanceReset.ViewModel
                 StandardErrorEncoding = Encoding.UTF8,
             };
 
-            using (System.Diagnostics.Process p = new System.Diagnostics.Process())
-            {
-                p.StartInfo = start;
-                p.EnableRaisingEvents = true;
-
-                p.OutputDataReceived += OutputDataReceived;
-                p.ErrorDataReceived += ErrorDataReceived;
-                p.Exited += Exited;
-
-                p.Start();
-                p.BeginOutputReadLine();
-                p.BeginErrorReadLine();
-                p.WaitForExit();
-            }
-        }
-
-        private void Exited(object sender, System.EventArgs e)
-        {
-            System.Diagnostics.Process p = (System.Diagnostics.Process)sender;
-
             try
             {
-                if (p.ExitCode == 0)
-                    dialog.Close();
-                else
-                    Message = Resources.Text.CreateExpCompleted;
+                using (System.Diagnostics.Process p = new System.Diagnostics.Process())
+                {
+                    p.StartInfo = start;
+                    p.EnableRaisingEvents = true;
+
+                    p.OutputDataReceived += OutputDataReceived;
+                    p.ErrorDataReceived += ErrorDataReceived;
+
+                    p.Start();
+
+                    p.BeginOutputReadLine();
+                    p.BeginErrorReadLine();
+                    p.WaitForExit();
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                Message = Resources.Text.CreateExpError;
+                _isError = true;
+                Logger.Log(ex.Message.ToString());
+                Message = ex.Message.ToString();
+                IsVisible = Visibility.Visible;
+                ProgressbarVisible = Visibility.Collapsed;
+            }
+            finally
+            {
+                _isProcessing = false;
             }
         }
 
@@ -187,6 +225,10 @@ namespace VSExpInstanceReset.ViewModel
                 return;
 
             Logger.Log(e.Data);
+            Message = e.Data;
+            _isError = true;
+            IsVisible = Visibility.Visible;
+            ProgressbarVisible = Visibility.Collapsed;
         }
 
 

@@ -22,11 +22,9 @@ namespace VSExpInstanceReset
 
     internal sealed class ResetVSExpInstanceCommand
     {
-        private static readonly EnvDTE.vsStatusAnimation _animation = EnvDTE.vsStatusAnimation.vsStatusAnimationFind;
         public static DTE2 DTE = Package.GetGlobalService(typeof(EnvDTE.DTE)) as DTE2;
-        private static bool _isProcessing = false;
 
-        public string Version { get; set; }
+        public string _version;
 
 
         private ResetVSExpInstanceCommand(Package package)
@@ -58,8 +56,19 @@ namespace VSExpInstanceReset
             get;
         }
 
+   
+        public string Argument
+        {
+            get
+            {
+                return @" /Reset /VSInstance=" + _version + "/ RootSuffix=Exp"; ;
+            }
+
+        }
+
         public static void Initialize(Package package)
         {
+
             Instance = new ResetVSExpInstanceCommand(package);
         }
 
@@ -67,126 +76,50 @@ namespace VSExpInstanceReset
 
         private void ResetExpInstance(object sender, EventArgs e)
         {
-            bool isReset= System.Windows.Forms.MessageBox.Show("This will Reset the Visual Studio Experiment Instance",
-           "Reset Experimental Instance", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes;
-            
+            string message = "Do you wish to reset Experimental Instance?";
+            string title = "Reset Experimental Instance";
 
-            string filePath = @"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VSSDK\VisualStudioIntegration\Tools\Bin\CreateExpInstance.exe";
-            string arguments = @" /Reset /VSInstance=14.0/ RootSuffix=Exp";
-           // string folder= @"C:\Windows\system32\Cmd.exe /C" + @"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VSSDK\VisualStudioIntegration\Tools\Bin\CreateExpInstance.exe " +" /Reset /VSInstance=14.0 /RootSuffix=Exp && PAUSE";
-           
-
-            if (!isReset)
+           int result=VsShellUtilities.ShowMessageBox(
+                 this.ServiceProvider,
+                 message,
+                 title,
+                 OLEMSGICON.OLEMSGICON_INFO,
+                 OLEMSGBUTTON.OLEMSGBUTTON_YESNO,
+                 OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            if(result.Equals(7))
+            {
                 return;
+            }
+
 
             ResetProgressViewModel vm = new ResetProgressViewModel();
             vm.DTE = DTE;
-            vm.FilePath = filePath;
-            vm.Argument = arguments;
+            vm.FilePath = GetFolderPath();
+            vm.Argument = Argument;
             vm.StartResettingExpInstance();
-
-           // StartExecuting( filePath, arguments);
-
         }
 
-        public void StartExecuting(  string path, string argument)
+
+        private string GetFolderPath()
         {
-            if (_isProcessing)
-                return;
+            var shell = (IVsShell)ServiceProvider.GetService(typeof(SVsShell));
+            object root;
 
-            ThreadPool.QueueUserWorkItem(o =>
+            if (shell.GetProperty((int)__VSSPROPID.VSSPROPID_VirtualRegistryRoot, out root) == VSConstants.S_OK)
             {
-                _isProcessing = true;
+                string appData = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+                _version = GetNumbers(Path.GetFileName(root.ToString()));
 
-                try
-                {
-                    Logger.Log(Resources.Text.CreateExpResetMessage);
-                    DTE.StatusBar.Text = Resources.Text.CreateExpResetMessage;
-                    DTE.StatusBar.Animate(true, _animation);
-                    //DTE.StatusBar.Progress(true, "Please waiting. resetting exp instance", 10 , 100); ;
-
-                    Execute(path, argument);
-
-                }
-                catch(Exception ex)
-                {
-                    Logger.Log(ex.Message.ToString());
-                    DTE.StatusBar.Clear();
-                }
-                finally
-                {
-                    DTE.StatusBar.Animate(false, _animation);
-                    _isProcessing = false;
-                   // DTE.StatusBar.Progress(false);
-                    DTE.StatusBar.Text = Resources.Text.CreateExpCompleted;
-                }
-
-            });
-        }
-
-        private void Execute(string path, string argument)
-        {
-
-            System.Diagnostics.ProcessStartInfo start = new System.Diagnostics.ProcessStartInfo(path)
-            {
-                UseShellExecute = false,
-                CreateNoWindow = true,
-                ErrorDialog = false,
-                Arguments = argument,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                StandardOutputEncoding = Encoding.UTF8,
-                StandardErrorEncoding = Encoding.UTF8,
-            };
-
-            using (System.Diagnostics.Process p = new System.Diagnostics.Process())
-            {
-                p.StartInfo = start;
-                p.EnableRaisingEvents = true;
-              
-                p.OutputDataReceived += OutputDataReceived;
-                p.ErrorDataReceived += ErrorDataReceived;
-                p.Exited += Exited;
-
-                p.Start();
-                p.BeginOutputReadLine();
-                p.BeginErrorReadLine();
-                p.WaitForExit();
+                return Path.Combine(appData, "Microsoft Visual Studio " + _version + "\\VSSDK\\VisualStudioIntegration\\Tools\\Bin\\CreateExpInstance.exe");
             }
+
+            return null;
         }
 
-        private void Exited(object sender, System.EventArgs e)
+     
+        private string GetNumbers(string input)
         {
-            System.Diagnostics.Process p = (System.Diagnostics.Process)sender;
-
-            try
-            {
-                if (p.ExitCode == 0)
-                    DTE.StatusBar.Clear();
-                else
-                    DTE.StatusBar.Text = Resources.Text.CreateExpCompleted;
-            }
-            catch
-            {
-                DTE.StatusBar.Text = Resources.Text.CreateExpError;
-            }
-        }
-
-        private void OutputDataReceived(object sender, System.Diagnostics.DataReceivedEventArgs e)
-        {
-            if (e == null || string.IsNullOrEmpty(e.Data))
-                return;
-           
-            Logger.Log(e.Data);
-           // DTE.StatusBar.Progress(true, "Please waiting, resetting exp instance", 50, 100); ;
-        }
-
-        private void ErrorDataReceived(object sender, System.Diagnostics.DataReceivedEventArgs e)
-        {
-            if (e == null || string.IsNullOrEmpty(e.Data))
-                return;
-
-            Logger.Log(e.Data);
+            return Regex.Replace(input, "[^0-9.]", "");
         }
 
     }

@@ -34,6 +34,7 @@ namespace VSExpInstanceReset
 
         protected override void Initialize()
         {
+            Logger.Initialize(this,Vsix.Name );
             ResetVSExpInstanceCommand.Initialize(this);
             base.Initialize();
         }
