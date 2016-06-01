@@ -12,7 +12,6 @@ When you are developing a Visual Studio Package project or any VSIX project, by 
 Visual Studio Experimental Instance is an instance of Visual Studio that has its own registry, settings, extension. This Instance enables developers to test extensions without breaking development environment. As the VSIX package testing accumulates, there is the possibility of corrupting test environment.
 This tool resets and clean the Experimental Instance, presenting you with a pristine environment you have the first time you start the Visual Studio experimental instance.
 
-
 See the [changelog](CHANGELOG.md) for changes and roadmap.
 
 ## Features
