@@ -25,6 +25,7 @@ namespace VSExpInstanceReset
         public static DTE2 DTE = Package.GetGlobalService(typeof(EnvDTE.DTE)) as DTE2;
 
         public string _version;
+        public string _versionExp;
 
 
         private ResetVSExpInstanceCommand(Package package)
@@ -56,7 +57,7 @@ namespace VSExpInstanceReset
             get;
         }
 
-   
+
         public string Argument
         {
             get
@@ -76,8 +77,11 @@ namespace VSExpInstanceReset
 
         private void ResetExpInstance(object sender, EventArgs e)
         {
+
+
+
             string message = "Do you wish to reset Experimental Instance?";
-            string title = "Reset Experimental Instance";
+            string title = Resources.Text.ExpInstanceCloseInstance;
 
            int result=VsShellUtilities.ShowMessageBox(
                  this.ServiceProvider,
@@ -96,9 +100,27 @@ namespace VSExpInstanceReset
             vm.DTE = DTE;
             vm.FilePath = GetFolderPath();
             vm.Argument = Argument;
+            DeleteExpAppDataFiles();
+            //Delete the registry HKEY_CURRENT_USER\Software\Microsoft\VisualStudio\14.0Exp
+            //Delete the registry HKEY_CURRENT_USER\Software\Microsoft\VisualStudio\14.0Exp_Config
             vm.StartResettingExpInstance();
         }
 
+        public void DeleteExpAppDataFiles()
+        {
+            try {
+                var appdataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Microsoft\\VisualStudio\\" + _versionExp;
+
+                if (Directory.Exists(appdataFolder))
+                {
+                    Directory.Delete(appdataFolder, true);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.ToString());
+            }
+        }
 
         private string GetFolderPath()
         {
@@ -108,7 +130,8 @@ namespace VSExpInstanceReset
             if (shell.GetProperty((int)__VSSPROPID.VSSPROPID_VirtualRegistryRoot, out root) == VSConstants.S_OK)
             {
                 string appData = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-                _version = GetNumbers(Path.GetFileName(root.ToString()));
+                _versionExp = Path.GetFileName(root.ToString());
+                _version = GetNumbers(_versionExp);
 
                 return Path.Combine(appData, "Microsoft Visual Studio " + _version + "\\VSSDK\\VisualStudioIntegration\\Tools\\Bin\\CreateExpInstance.exe");
             }
@@ -116,7 +139,7 @@ namespace VSExpInstanceReset
             return null;
         }
 
-     
+
         private string GetNumbers(string input)
         {
             return Regex.Replace(input, "[^0-9.]", "");

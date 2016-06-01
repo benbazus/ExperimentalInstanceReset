@@ -61,20 +61,11 @@ namespace VSExpInstanceReset.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ready.
+        ///   Looks up a localized string similar to Please close any running instance of Visual Studio Experiment before proceeding..
         /// </summary>
-        internal static string CreateExpCompleted {
+        internal static string ExpInstanceCloseInstance {
             get {
-                return ResourceManager.GetString("CreateExpCompleted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Error occured during reseting experimental instance..
-        /// </summary>
-        internal static string CreateExpError {
-            get {
-                return ResourceManager.GetString("CreateExpError", resourceCulture);
+                return ResourceManager.GetString("ExpInstanceCloseInstance", resourceCulture);
             }
         }
         
@@ -84,6 +75,15 @@ namespace VSExpInstanceReset.Resources {
         internal static string ExpInstanceMessage {
             get {
                 return ResourceManager.GetString("ExpInstanceMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error occured during reseting experimental instance..
+        /// </summary>
+        internal static string ExpInstanceMessage2 {
+            get {
+                return ResourceManager.GetString("ExpInstanceMessage2", resourceCulture);
             }
         }
         

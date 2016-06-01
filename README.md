@@ -8,7 +8,10 @@ or get the [CI build](http://vsixgallery.com/extension/a452f910-6b6e-4ebd-952f-d
 
 ---------------------------------------
 
-Reset Visual Studio Experimental Instance.
+When you are developing a Visual Studio Package project or any VSIX project, by default your application will be set to start debugging in a Visual Studio Experimental instance. This is in a bid to safeguard your Visual Studio development environment from untested extensions that might change it.
+Visual Studio Experimental Instance is an instance of Visual Studio that has its own registry, settings, extension. This Instance enables developers to test extensions without breaking development environment. As the VSIX package testing accumulates, there is the possibility of corrupting test environment.
+This tool resets and clean the Experimental Instance, presenting you with a pristine environment you have the first time you start the Visual Studio experimental instance.
+
 
 See the [changelog](CHANGELOG.md) for changes and roadmap.
 
