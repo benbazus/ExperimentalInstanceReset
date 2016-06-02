@@ -117,13 +117,13 @@ namespace VSExpInstanceReset
 
                 if (Directory.Exists(appdataFolder))
                 {
-                    //var directory = new DirectoryInfo(targetDir);
-                    //if (directory.Exists)
-                    //{
-                    //    Microsoft.VisualBasic.FileIO.FileSystem.DeleteDirectory(appdataFolder, Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
-                    //}
+                    var directory = new DirectoryInfo(appdataFolder);
+                    if (directory.Exists)
+                    {
+                        Microsoft.VisualBasic.FileIO.FileSystem.DeleteDirectory(appdataFolder, Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
+                    }
 
-                    RecursiveDeleteExpFiles(appdataFolder, true); 
+                   // RecursiveDeleteExpFiles(appdataFolder, true); 
                 }
             }
             catch (UnauthorizedAccessException ex)
