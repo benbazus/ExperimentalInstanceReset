@@ -181,7 +181,7 @@ namespace VSExpInstanceReset
                 _version = GetNumbers(Path.GetFileName(root.ToString()));
 
                 _filePath = Path.Combine(appData, "Microsoft Visual Studio " + _version + "\\VSSDK\\VisualStudioIntegration\\Tools\\Bin\\CreateExpInstance.exe");
-                Logger.Log("Visual Studio Experimental Instance location: " + _filePath);
+                Logger.Log("Visual Studio Experimental Instance path: " + _filePath);
             }
         }
 
