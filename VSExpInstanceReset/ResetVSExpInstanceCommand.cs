@@ -25,7 +25,6 @@ namespace VSExpInstanceReset
         public static DTE2 DTE = Package.GetGlobalService(typeof(EnvDTE.DTE)) as DTE2;
 
         public string _version;
-        public string _versionExp;
         public string _filePath;
 
         private ResetVSExpInstanceCommand(Package package)
@@ -113,17 +112,15 @@ namespace VSExpInstanceReset
             string appdataFolder=string.Empty;
             try
             {
-                appdataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Microsoft\\VisualStudio\\" + _versionExp;
+                string appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+
+                appdataFolder =  Path.Combine(appData, "Microsoft\\VisualStudio\\"+ _version + "Exp\\");
+
+                Logger.Log(appdataFolder);
 
                 if (Directory.Exists(appdataFolder))
                 {
-                    var directory = new DirectoryInfo(appdataFolder);
-                    if (directory.Exists)
-                    {
-                        Microsoft.VisualBasic.FileIO.FileSystem.DeleteDirectory(appdataFolder, Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
-                    }
-
-                   // RecursiveDeleteExpFiles(appdataFolder, true); 
+                    RecursiveDeleteExpFiles(appdataFolder, true); 
                 }
             }
             catch (UnauthorizedAccessException ex)
@@ -155,21 +152,16 @@ namespace VSExpInstanceReset
                     File.SetAttributes(filePpath, attr);
                 }
 
-                //// delete/clear hidden attribute
-                //File.SetAttributes(filePath, File.GetAttributes(filePath) & ~FileAttributes.Hidden);
-
-                //// delete/clear archive and read only attributes
-                //File.SetAttributes(filePath, File.GetAttributes(filePath) & ~(FileAttributes.Archive | FileAttributes.ReadOnly));
-
-
                 if ((attr & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
                 {
                     File.SetAttributes(file, attr ^ FileAttributes.ReadOnly);
                 }
 
+                Logger.Log(file);
                 File.Delete(file);
             }
 
+            Logger.Log(filePpath);
             Directory.Delete(filePpath);
         }
 
@@ -186,12 +178,12 @@ namespace VSExpInstanceReset
             if (shell.GetProperty((int)__VSSPROPID.VSSPROPID_VirtualRegistryRoot, out root) == VSConstants.S_OK)
             {
                 string appData = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-                _versionExp = Path.GetFileName(root.ToString());
-                _version = GetNumbers(_versionExp);
+                _version = GetNumbers(Path.GetFileName(root.ToString()));
 
                 _filePath = Path.Combine(appData, "Microsoft Visual Studio " + _version + "\\VSSDK\\VisualStudioIntegration\\Tools\\Bin\\CreateExpInstance.exe");
+                Logger.Log("Visual Studio Experimental Instance location: " + _filePath);
             }
-                    }
+        }
 
 
         private string GetNumbers(string input)
