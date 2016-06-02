@@ -26,7 +26,7 @@ namespace VSExpInstanceReset
 
         public string _version;
         public string _versionExp;
-
+        public string _filePath;
 
         private ResetVSExpInstanceCommand(Package package)
         {
@@ -95,34 +95,90 @@ namespace VSExpInstanceReset
                 return;
             }
 
-
-            ResetProgressViewModel vm = new ResetProgressViewModel();
-            vm.DTE = DTE;
-            vm.FilePath = GetFolderPath();
-            vm.Argument = Argument;
+            ProcessFolderPath();
             DeleteExpAppDataFiles();
             //Delete the registry HKEY_CURRENT_USER\Software\Microsoft\VisualStudio\14.0Exp
             //Delete the registry HKEY_CURRENT_USER\Software\Microsoft\VisualStudio\14.0Exp_Config
+
+
+            ResetProgressViewModel vm = new ResetProgressViewModel();
+            vm.DTE = DTE;
+            vm.FilePath = _filePath; 
+            vm.Argument = Argument;
             vm.StartResettingExpInstance();
         }
 
         public void DeleteExpAppDataFiles()
         {
-            try {
-                var appdataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Microsoft\\VisualStudio\\" + _versionExp;
+            string appdataFolder=string.Empty;
+            try
+            {
+                appdataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Microsoft\\VisualStudio\\" + _versionExp;
 
                 if (Directory.Exists(appdataFolder))
                 {
-                    Directory.Delete(appdataFolder, true);
+                    //var directory = new DirectoryInfo(targetDir);
+                    //if (directory.Exists)
+                    //{
+                    //    Microsoft.VisualBasic.FileIO.FileSystem.DeleteDirectory(appdataFolder, Microsoft.VisualBasic.FileIO.DeleteDirectoryOption.DeleteAllContents);
+                    //}
+
+                    RecursiveDeleteExpFiles(appdataFolder, true); 
                 }
             }
-            catch (Exception ex)
+            catch (UnauthorizedAccessException ex)
             {
-                Logger.Log(ex.ToString());
+                Logger.Log("UnAuthorizedAccessException: Unable to access file. " + ex.Message);
             }
         }
 
-        private string GetFolderPath()
+    
+        public  void RecursiveDeleteExpFiles(string filePpath, bool recursive)
+        {
+            if (recursive)
+            {
+                var subfolders = Directory.GetDirectories(filePpath);
+                foreach (var s in subfolders)
+                {
+                    RecursiveDeleteExpFiles(s, recursive);
+                }
+            }
+
+            var files = Directory.GetFiles(filePpath);
+            foreach (var file in files)
+            {
+                var attr = File.GetAttributes(file);
+
+                if ((attr & FileAttributes.Hidden) == FileAttributes.Hidden)
+                {
+                    attr = RemoveAttribute(attr, FileAttributes.Hidden);
+                    File.SetAttributes(filePpath, attr);
+                }
+
+                //// delete/clear hidden attribute
+                //File.SetAttributes(filePath, File.GetAttributes(filePath) & ~FileAttributes.Hidden);
+
+                //// delete/clear archive and read only attributes
+                //File.SetAttributes(filePath, File.GetAttributes(filePath) & ~(FileAttributes.Archive | FileAttributes.ReadOnly));
+
+
+                if ((attr & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                {
+                    File.SetAttributes(file, attr ^ FileAttributes.ReadOnly);
+                }
+
+                File.Delete(file);
+            }
+
+            Directory.Delete(filePpath);
+        }
+
+        private  FileAttributes RemoveAttribute(FileAttributes attributes, FileAttributes attributesToRemove)
+        {
+            return attributes & ~attributesToRemove;
+        }
+
+        private void ProcessFolderPath()
         {
             var shell = (IVsShell)ServiceProvider.GetService(typeof(SVsShell));
             object root;
@@ -133,11 +189,9 @@ namespace VSExpInstanceReset
                 _versionExp = Path.GetFileName(root.ToString());
                 _version = GetNumbers(_versionExp);
 
-                return Path.Combine(appData, "Microsoft Visual Studio " + _version + "\\VSSDK\\VisualStudioIntegration\\Tools\\Bin\\CreateExpInstance.exe");
+                _filePath = Path.Combine(appData, "Microsoft Visual Studio " + _version + "\\VSSDK\\VisualStudioIntegration\\Tools\\Bin\\CreateExpInstance.exe");
             }
-
-            return null;
-        }
+                    }
 
 
         private string GetNumbers(string input)
