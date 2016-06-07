@@ -9,10 +9,7 @@
 
     <Groups>
       <Group guid="guidResetVSExpInstanceCommandPackageCmdSet" id="MyMenuGroup" priority="0x0600">
-        <!--<Parent guid="guidSHLMainMenu" id="IDG_VS_TOOLS_EXT_TOOLS"/>-->
-           <!--<Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>-->
            <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>
-
       </Group>
     </Groups>
       <Buttons>

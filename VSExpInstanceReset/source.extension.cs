@@ -9,7 +9,7 @@ namespace VSExpInstanceReset
     {
         public const string Id = "a452f910-6b6e-4ebd-952f-d8f1cd8c09b4";
         public const string Name = "Reset Experimental Instance";
-        public const string Description = "Reset Visual Studio Experimental Instance.";
+        public const string Description = "Reset Visual Studio Experimental Instance to its pristine condition";
         public const string Language = "en-US";
         public const string Version = "1.0";
         public const string Author = "Benjamin Uboegbu";

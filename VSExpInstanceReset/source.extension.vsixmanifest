@@ -3,7 +3,7 @@
     <Metadata>
         <Identity Id="a452f910-6b6e-4ebd-952f-d8f1cd8c09b4" Version="1.0" Language="en-US" Publisher="Benjamin Uboegbu" />
         <DisplayName>Reset Experimental Instance</DisplayName>
-        <Description xml:space="preserve">Reset Visual Studio Experimental Instance.</Description>
+        <Description xml:space="preserve">Reset Visual Studio Experimental Instance to its pristine condition</Description>
         <MoreInfo>https://github.com/benbazus/ExperimentalInstanceReset</MoreInfo>
         <License>Resources\LICENSE</License>
         <Icon>Resources\Icon.png</Icon>

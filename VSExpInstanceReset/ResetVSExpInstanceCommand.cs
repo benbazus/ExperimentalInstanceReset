@@ -36,10 +36,10 @@ namespace VSExpInstanceReset
 
             this.ServiceProvider = package;
 
-            OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+            var commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (commandService != null)
             {
-                var menuCommandID = new CommandID(GuidList.guidResetVSExpInstanceCommandPackageCmdSet, PackageIds.ResetExpCacheId);
+                var menuCommandID = new CommandID(PackageGuids.guidResetVSExpInstanceCommandPackageCmdSet, PackageIds.ResetVSExpInstanceCommandId );
                 var menuItem = new MenuCommand(this.ResetExpInstance, menuCommandID);
                 commandService.AddCommand(menuItem);
             }
@@ -76,20 +76,17 @@ namespace VSExpInstanceReset
 
         private void ResetExpInstance(object sender, EventArgs e)
         {
-
-
-
             string message = "Do you wish to reset Experimental Instance?";
             string title = Resources.Text.ExpInstanceCloseInstance;
 
-           int result=VsShellUtilities.ShowMessageBox(
-                 this.ServiceProvider,
-                 message,
-                 title,
-                 OLEMSGICON.OLEMSGICON_INFO,
-                 OLEMSGBUTTON.OLEMSGBUTTON_YESNO,
-                 OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
-            if(result.Equals(7))
+            int result = VsShellUtilities.ShowMessageBox(
+                  this.ServiceProvider,
+                  message,
+                  title,
+                  OLEMSGICON.OLEMSGICON_INFO,
+                  OLEMSGBUTTON.OLEMSGBUTTON_YESNO,
+                  OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            if (result.Equals(7))
             {
                 return;
             }
@@ -100,10 +97,12 @@ namespace VSExpInstanceReset
             //Delete the registry HKEY_CURRENT_USER\Software\Microsoft\VisualStudio\14.0Exp_Config
 
 
-            ResetProgressViewModel vm = new ResetProgressViewModel();
-            vm.DTE = DTE;
-            vm.FilePath = _filePath; 
-            vm.Argument = Argument;
+            var vm = new ResetProgressViewModel
+            {
+                DTE = DTE,
+                FilePath = _filePath,
+                Argument = Argument
+            };
             vm.StartResettingExpInstance();
         }
 
