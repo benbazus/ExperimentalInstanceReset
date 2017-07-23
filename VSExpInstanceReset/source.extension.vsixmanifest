@@ -1,29 +1,30 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
-    <Metadata>
-        <Identity Id="a452f910-6b6e-4ebd-952f-d8f1cd8c09b4" Version="1.0" Language="en-US" Publisher="Benjamin Uboegbu" />
-        <DisplayName>Reset Experimental Instance</DisplayName>
-        <Description xml:space="preserve">Reset Visual Studio Experimental Instance to its pristine condition</Description>
-        <MoreInfo>https://github.com/benbazus/ExperimentalInstanceReset</MoreInfo>
-        <License>Resources\LICENSE</License>
-        <Icon>Resources\Icon.png</Icon>
-        <PreviewImage>Resources\Preview.png</PreviewImage>
-        <Tags>reset, clean, component, cache</Tags>
-    </Metadata>
-    <Installation InstalledByMsi="false">
-       <!--  <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0]" />
+  <Metadata>
+    <Identity Id="a452f910-6b6e-4ebd-952f-d8f1cd8c09b4" Version="1.0" Language="en-US" Publisher="Benjamin Uboegbu" />
+    <DisplayName>Reset Experimental Instance</DisplayName>
+    <Description xml:space="preserve">Reset Visual Studio Experimental Instance to its pristine condition</Description>
+    <MoreInfo>https://github.com/benbazus/ExperimentalInstanceReset</MoreInfo>
+    <License>Resources\LICENSE</License>
+    <Icon>Resources\Icon.png</Icon>
+    <PreviewImage>Resources\Preview.png</PreviewImage>
+    <Tags>reset, clean, component, cache</Tags>
+  </Metadata>
+  <Installation InstalledByMsi="false">
+    <!--  <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0]" />
         <InstallationTarget Version="[13.0,14.0)" Id="Microsoft.VisualStudio.Enterprise" />
         <InstallationTarget Version="[14.0,15.0)" Id="Microsoft.VisualStudio.Pro" /> -->
-		<InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="12.0" />
-        <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="14.0" />
-        <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="15.0" />
-    </Installation>
-    <Dependencies>
-        <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
-        <Dependency Id="Microsoft.VisualStudio.MPF.14.0" DisplayName="Visual Studio MPF 14.0" d:Source="Installed" Version="[14.0]" />
-    </Dependencies>
-    <Assets>
-        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
-        <Asset Type="Microsoft.VisualStudio.ToolboxControl" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
-    </Assets>
+    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="12.0" />
+    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="14.0" />
+    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="15.0" />
+    <InstallationTarget Version="16.0" Id="Microsoft.VisualStudio.Pro" />
+  </Installation>
+  <Dependencies>
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
+    <Dependency Id="Microsoft.VisualStudio.MPF.14.0" DisplayName="Visual Studio MPF 14.0" d:Source="Installed" Version="[14.0]" />
+  </Dependencies>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+    <Asset Type="Microsoft.VisualStudio.ToolboxControl" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+  </Assets>
 </PackageManifest>
